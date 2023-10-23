@@ -22,7 +22,7 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       disabled={disabled}
       className={`
-        realative
+        relative
         disabled:opacity-70
         disabled:cursor-not-allowed
         rounded-lg
