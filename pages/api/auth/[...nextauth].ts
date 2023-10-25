@@ -1,9 +1,10 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import NextAuth, { AuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import GithubProvider from "next-auth/providers/github";
-import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
+import NextAuth, { AuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GithubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+
 import prisma from "@/app/libs/prismadb";
 
 export const authOptions: AuthOptions = {
@@ -27,11 +28,13 @@ export const authOptions: AuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Invalid credentials");
         }
+
         const user = await prisma.user.findUnique({
           where: {
             email: credentials.email,
           },
         });
+
         if (!user || !user?.hashedPassword) {
           throw new Error("Invalid credentials");
         }
@@ -40,15 +43,15 @@ export const authOptions: AuthOptions = {
           credentials.password,
           user.hashedPassword
         );
+
         if (!isCorrectPassword) {
-          throw new Error("invalid credentials");
+          throw new Error("Invalid credentials");
         }
 
         return user;
       },
     }),
   ],
-  //whenever a error happens it is going to redirect to sing in page
   pages: {
     signIn: "/",
   },
